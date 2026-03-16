@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>گرتە — Creative Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & BASE ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: #0B1320;
+  color: #FFFFFF;
+  font-family: 'Manrope', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+  line-height: 1.6;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* ─── CSS VARIABLES ─────────────────────────────────────────── */
+:root {
+  --navy: #0B1320;
+  --navy-deep: #070e1a;
+  --navy-mid: #0f1c30;
+  --white: #FFFFFF;
+  --gold: #F5C542;
+  --gold-light: #FFD86B;
+  --gold-glow: rgba(245,197,66,0.4);
+  --gold-subtle: rgba(245,197,66,0.15);
+  --glass-bg: rgba(255,255,255,0.05);
+  --glass-border: rgba(255,255,255,0.10);
+  --glass-highlight: rgba(255,255,255,0.08);
+  --transition-slow: 1s cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-med: 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-fast: 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-gold: 0 0 40px rgba(245,197,66,0.18), 0 0 80px rgba(245,197,66,0.08);
+  --shadow-glass: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
+  --radius-card: 20px;
+  --radius-btn: 50px;
+}
+
+/* ─── CUSTOM CURSOR ─────────────────────────────────────────── */
+#cursor-dot {
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%,-50%);
+  transition: opacity 0.3s, transform 0.1s;
+  box-shadow: 0 0 12px var(--gold), 0 0 24px rgba(245,197,66,0.5);
+  animation: cursorGlow 2s ease-in-out infinite alternate;
+}
+#cursor-ring {
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(245,197,66,0.6);
+  border-radius: 50%;
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%,-50%);
+  transition: width 0.35s, height 0.35s, border-color 0.35s, left 0.12s ease-out, top 0.12s ease-out;
+  backdrop-filter: blur(1px);
+}
+body:has(a:hover) #cursor-ring,
+body:has(button:hover) #cursor-ring {
+  width: 54px; height: 54px;
+  border-color: var(--gold);
+}
+@keyframes cursorGlow {
+  from { box-shadow: 0 0 8px var(--gold), 0 0 20px rgba(245,197,66,0.4); }
+  to   { box-shadow: 0 0 16px var(--gold-light), 0 0 40px rgba(245,197,66,0.6); }
+}
+
+/* ─── CINEMATIC BACKGROUND ─────────────────────────────────── */
+#bg-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+  opacity: 0.7;
+}
+
+.bg-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.06;
+}
+.bg-orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, #F5C542 0%, transparent 70%);
+  top: -200px; left: -100px;
+  animation: orbFloat1 20s ease-in-out infinite alternate;
+}
+.bg-orb-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, #1a3a6e 0%, transparent 70%);
+  bottom: 10%; right: -150px;
+  animation: orbFloat2 25s ease-in-out infinite alternate;
+  opacity: 0.08;
+}
+.bg-orb-3 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #F5C542 0%, transparent 70%);
+  top: 50%; left: 50%;
+  animation: orbFloat3 30s ease-in-out infinite alternate;
+  opacity: 0.04;
+}
+@keyframes orbFloat1 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(80px, 120px) scale(1.2); }
+}
+@keyframes orbFloat2 {
+  from { transform: translate(0, 0) scale(1.1); }
+  to   { transform: translate(-60px, -80px) scale(0.9); }
+}
+@keyframes orbFloat3 {
+  from { transform: translate(-50%, -50%) scale(1); }
+  to   { transform: translate(-40%, -60%) scale(1.3); }
+}
+
+/* ─── NOISE TEXTURE OVERLAY ──────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.018;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── NAVBAR ──────────────────────────────────────────────────── */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 48px;
+  height: 80px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(11,19,32,0.6);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(245,197,66,0.12);
+  transition: all 0.5s ease;
+}
+#navbar.scrolled {
+  background: rgba(7,14,26,0.85);
+  border-bottom-color: rgba(245,197,66,0.2);
+  box-shadow: 0 4px 40px rgba(0,0,0,0.5);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none;
+}
+.nav-logo-img-wrap {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.nav-logo-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(245,197,66,0.5));
+  animation: logoFlicker 6s ease-in-out infinite;
+}
+.nav-logo-placeholder {
+  font-family: 'Reem Kufi', sans-serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(245,197,66,0.6);
+  animation: logoFlicker 6s ease-in-out infinite;
+  letter-spacing: 1px;
+}
+@keyframes logoFlicker {
+  0%,  85%, 100% { opacity: 1;    filter: drop-shadow(0 0 10px rgba(245,197,66,0.5)); }
+  87%            { opacity: 0.94; filter: drop-shadow(0 0 22px rgba(245,197,66,0.85)); }
+  89%            { opacity: 1;    filter: drop-shadow(0 0 8px  rgba(245,197,66,0.4)); }
+  92%            { opacity: 0.97; filter: drop-shadow(0 0 28px rgba(255,216,107,0.75)); }
+  94%            { opacity: 1;    filter: drop-shadow(0 0 12px rgba(245,197,66,0.5)); }
+}
+.nav-links {
+  display: flex; align-items: center; gap: 40px;
+}
+.nav-links a {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  transition: color var(--transition-fast);
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform var(--transition-med);
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.nav-cta {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--navy) !important;
+  background: var(--gold);
+  padding: 10px 24px;
+  border-radius: var(--radius-btn);
+  transition: all var(--transition-med) !important;
+  box-shadow: 0 0 20px rgba(245,197,66,0.3);
+}
+.nav-cta:hover {
+  background: var(--gold-light) !important;
+  box-shadow: 0 0 40px rgba(245,197,66,0.5) !important;
+  transform: translateY(-1px);
+}
+.nav-cta::after { display: none !important; }
+
+/* Burger */
+.burger {
+  display: none;
+  flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 4px;
+}
+.burger span {
+  display: block; width: 26px; height: 2px;
+  background: var(--white);
+  transition: all var(--transition-med);
+  transform-origin: center;
+}
+.burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile nav */
+.mobile-menu {
+  position: fixed; top: 80px; left: 0; right: 0;
+  background: rgba(7,14,26,0.97);
+  backdrop-filter: blur(30px);
+  padding: 32px 48px;
+  display: flex; flex-direction: column; gap: 24px;
+  border-bottom: 1px solid rgba(245,197,66,0.15);
+  transform: translateY(-110%);
+  transition: transform var(--transition-slow);
+  z-index: 999;
+}
+.mobile-menu.open { transform: translateY(0); }
+.mobile-menu a {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+  transition: color var(--transition-fast);
+}
+.mobile-menu a:hover { color: var(--gold); }
+
+/* ─── SECTIONS WRAPPER ────────────────────────────────────────── */
+section { position: relative; z-index: 2; }
+
+/* ─── HERO ────────────────────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 120px 40px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-tagline {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 1.2s 0.4s cubic-bezier(0.22,1,0.36,1) forwards;
+  display: flex; align-items: center; gap: 16px;
+}
+.hero-tagline::before, .hero-tagline::after {
+  content: '';
+  display: block; width: 48px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+.hero-tagline::after { transform: scaleX(-1); }
+
+.hero-logo-mark {
+  font-family: 'Reem Kufi', sans-serif;
+  font-size: clamp(80px, 14vw, 180px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -2px;
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 40%, #e8aa1e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 40px rgba(245,197,66,0.4));
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: heroLogoReveal 1.8s 0.6s cubic-bezier(0.22,1,0.36,1) forwards, logoFlickerText 10s 2.5s ease-in-out infinite;
+  position: relative;
+}
+@keyframes heroLogoReveal {
+  from { opacity: 0; transform: scale(0.88) translateY(20px); filter: drop-shadow(0 0 0px transparent) blur(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); filter: drop-shadow(0 0 40px rgba(245,197,66,0.4)); }
+}
+@keyframes logoFlickerText {
+  0%, 88%, 100% { filter: drop-shadow(0 0 40px rgba(245,197,66,0.4)); }
+  90% { filter: drop-shadow(0 0 60px rgba(255,216,107,0.8)); }
+  92% { filter: drop-shadow(0 0 30px rgba(245,197,66,0.3)); }
+  95% { filter: drop-shadow(0 0 70px rgba(255,216,107,0.7)); }
+}
+
+.hero-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(38px, 6vw, 80px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -1px;
+  color: var(--white);
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeUp 1.2s 1.1s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.hero-headline em {
+  font-style: italic;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(15px, 2vw, 19px);
+  font-weight: 400;
+  color: rgba(255,255,255,0.55);
+  max-width: 520px;
+  margin: 0 auto 44px;
+  opacity: 0;
+  animation: fadeUp 1.2s 1.3s cubic-bezier(0.22,1,0.36,1) forwards;
+  letter-spacing: 0.3px;
+}
+
+.hero-buttons {
+  display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+  opacity: 0;
+  animation: fadeUp 1.2s 1.55s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.btn-primary {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  padding: 16px 40px;
+  border-radius: var(--radius-btn);
+  border: none; cursor: none;
+  transition: box-shadow 0.55s cubic-bezier(0.22,1,0.36,1),
+              transform 0.55s cubic-bezier(0.22,1,0.36,1);
+  box-shadow: 0 0 30px rgba(245,197,66,0.35), 0 4px 20px rgba(0,0,0,0.3);
+  position: relative; overflow: hidden;
+  will-change: transform;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+  transition: left 0.75s cubic-bezier(0.22,1,0.36,1);
+}
+.btn-primary:hover::before { left: 100%; }
+.btn-primary:hover {
+  box-shadow: 0 0 55px rgba(245,197,66,0.6), 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateY(-3px);
+}
+.btn-ghost {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  background: transparent;
+  padding: 15px 36px;
+  border-radius: var(--radius-btn);
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: none;
+  transition: border-color 0.55s cubic-bezier(0.22,1,0.36,1),
+              color 0.55s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.55s cubic-bezier(0.22,1,0.36,1),
+              transform 0.55s cubic-bezier(0.22,1,0.36,1);
+  will-change: transform;
+}
+.btn-ghost:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 0 24px rgba(245,197,66,0.18);
+  transform: translateY(-3px);
+}
+
+.hero-scroll-indicator {
+  position: absolute; bottom: 40px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0;
+  animation: fadeUp 1.2s 2.2s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.scroll-line {
+  width: 1px; height: 54px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollPulse 2.4s ease-in-out infinite;
+  transform-origin: top center;
+}
+.scroll-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+@keyframes scrollPulse {
+  0%   { opacity: 0.3; transform: scaleY(0.85); }
+  50%  { opacity: 1;   transform: scaleY(1.1); }
+  100% { opacity: 0.3; transform: scaleY(0.85); }
+}
+
+/* ─── SECTION SHARED STYLES ──────────────────────────────────── */
+.section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+.section-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-label::before {
+  content: '';
+  display: block; width: 32px; height: 1px;
+  background: var(--gold);
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4.5vw, 58px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+.section-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+.section-desc {
+  font-family: 'Manrope', sans-serif;
+  font-size: 17px; font-weight: 400;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ─── GLASS CARD ─────────────────────────────────────────────── */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-glass);
+  transition: border-color 0.55s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.55s cubic-bezier(0.22,1,0.36,1),
+              transform 0.55s cubic-bezier(0.22,1,0.36,1);
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
+.glass-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+}
+.glass-card:hover {
+  border-color: rgba(245,197,66,0.3);
+  box-shadow: var(--shadow-glass), 0 0 40px rgba(245,197,66,0.12);
+  transform: translateY(-4px);
+}
+
+/* ─── DIVIDER ─────────────────────────────────────────────────── */
+.divider {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245,197,66,0.2), transparent);
+  margin: 0;
+}
+
+/* ─── ABOUT SECTION ──────────────────────────────────────────── */
+#about {
+  padding: 120px 0;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.about-left .section-desc { margin-bottom: 40px; }
+.about-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.about-right {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.stat-card {
+  padding: 32px 28px;
+  text-align: center;
+}
+.stat-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px; font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+  display: block;
+}
+.stat-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+
+/* ─── PROCESS SECTION ─────────────────────────────────────────── */
+#process {
+  padding: 120px 0;
+  background: linear-gradient(180deg, transparent, rgba(15,28,48,0.4), transparent);
+}
+.process-header { text-align: center; margin-bottom: 72px; }
+.process-header .section-label { justify-content: center; }
+.process-header .section-label::before { display: none; }
+.process-header .section-desc { margin: 0 auto; text-align: center; }
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.process-card {
+  padding: 44px 32px;
+  text-align: center;
+  cursor: default;
+}
+.process-icon {
+  width: 64px; height: 64px;
+  margin: 0 auto 24px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.process-icon svg {
+  width: 32px; height: 32px;
+  stroke: var(--gold);
+  fill: none;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 8px rgba(245,197,66,0.5));
+  animation: iconGlow 3s ease-in-out infinite alternate;
+}
+@keyframes iconGlow {
+  from { filter: drop-shadow(0 0 4px rgba(245,197,66,0.35)); }
+  to   { filter: drop-shadow(0 0 18px rgba(255,216,107,0.75)); }
+}
+.process-icon::before {
+  content: '';
+  position: absolute; inset: 0;
+  border: 1px solid rgba(245,197,66,0.2);
+  border-radius: 50%;
+  animation: ringPulse 3.5s ease-in-out infinite;
+}
+@keyframes ringPulse {
+  0%   { transform: scale(1);    opacity: 0.5; }
+  50%  { transform: scale(1.18); opacity: 0.15; }
+  100% { transform: scale(1);    opacity: 0.5; }
+}
+.process-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--gold);
+  opacity: 0.6;
+  margin-bottom: 12px;
+  display: block;
+  font-style: italic;
+}
+.process-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--white);
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+.process-desc {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.65;
+}
+
+/* ─── SERVICES SECTION ─────────────────────────────────────────── */
+#services {
+  padding: 120px 0;
+}
+.services-header { margin-bottom: 60px; }
+.services-list {
+  display: flex; flex-direction: column; gap: 0;
+}
+.service-row {
+  display: flex; align-items: center;
+  padding: 28px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: padding-left 0.55s cubic-bezier(0.22,1,0.36,1),
+              border-color 0.55s cubic-bezier(0.22,1,0.36,1);
+  cursor: default;
+  gap: 32px;
+}
+.service-row:first-child { border-top: 1px solid rgba(255,255,255,0.06); }
+.service-row:hover { padding-left: 16px; border-bottom-color: rgba(245,197,66,0.2); }
+.service-row:hover .service-name { color: var(--gold); }
+.service-row:hover .service-arrow { opacity: 1; transform: translateX(0); color: var(--gold); }
+.service-icon-wrap {
+  width: 48px; height: 48px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  transition: background 0.55s cubic-bezier(0.22,1,0.36,1),
+              border-color 0.55s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.55s cubic-bezier(0.22,1,0.36,1);
+}
+.service-row:hover .service-icon-wrap {
+  background: rgba(245,197,66,0.1);
+  border-color: rgba(245,197,66,0.3);
+  box-shadow: 0 0 24px rgba(245,197,66,0.18);
+}
+.service-icon-wrap svg {
+  width: 22px; height: 22px;
+  stroke: var(--gold); fill: none; stroke-width: 1.5;
+}
+.service-name {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  flex: 1;
+  transition: color 0.4s cubic-bezier(0.22,1,0.36,1);
+  letter-spacing: 0.3px;
+}
+.service-tag {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  flex-shrink: 0;
+}
+.service-arrow {
+  font-size: 20px;
+  color: rgba(255,255,255,0.3);
+  opacity: 0;
+  transform: translateX(-14px);
+  transition: opacity 0.45s cubic-bezier(0.22,1,0.36,1),
+              transform 0.45s cubic-bezier(0.22,1,0.36,1),
+              color 0.45s cubic-bezier(0.22,1,0.36,1);
+  flex-shrink: 0;
+}
+
+/* ─── BUNDLES SECTION ─────────────────────────────────────────── */
+#bundles {
+  padding: 120px 0;
+  background: linear-gradient(180deg, transparent, rgba(15,28,48,0.5), transparent);
+}
+.bundles-header { text-align: center; margin-bottom: 72px; }
+.bundles-header .section-label { justify-content: center; }
+.bundles-header .section-label::before { display: none; }
+.bundles-header .section-desc { margin: 0 auto; text-align: center; }
+
+.bundles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding-top: 20px;
+  margin-bottom: 60px;
+}
+.bundle-card {
+  padding: 36px 28px;
+  position: relative;
+  overflow: visible; /* allow badge to sit above the card edge */
+}
+/* inner shine line — re-apply manually since overflow:visible breaks ::before clip */
+.bundle-card::before {
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+/* Badge wrapper sits ABOVE the card — no clipping */
+.bundle-badge-wrap {
+  position: absolute;
+  top: -16px; left: 0; right: 0;
+  display: flex; justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+.bundle-badge {
+  display: inline-block;
+  font-family: 'Syne', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  padding: 5px 18px;
+  border-radius: 20px;
+  white-space: nowrap;
+  box-shadow: 0 0 24px rgba(245,197,66,0.5), 0 2px 8px rgba(0,0,0,0.3);
+}
+/* Push inner content down so it doesn't overlap the badge */
+.bundle-card.featured,
+.bundle-card.best-value {
+  padding-top: 48px;
+}
+.bundle-card.featured {
+  border-color: rgba(245,197,66,0.4);
+  background: rgba(245,197,66,0.05);
+  box-shadow: var(--shadow-glass), 0 0 60px rgba(245,197,66,0.12);
+}
+.bundle-card.best-value {
+  border-color: rgba(245,197,66,0.5);
+  background: linear-gradient(135deg, rgba(245,197,66,0.08), rgba(255,216,107,0.04));
+  box-shadow: var(--shadow-glass), 0 0 80px rgba(245,197,66,0.18);
+}
+/* Grid needs top padding so the badges don't get cut by the section overflow */
+.bundles-grid {
+  padding-top: 20px;
+}
+.bundle-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.bundle-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--white);
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+.bundle-features {
+  display: flex; flex-direction: column; gap: 10px;
+  margin-bottom: 32px;
+}
+.bundle-feature {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.4;
+}
+.bundle-feature::before {
+  content: '';
+  display: block; width: 16px; height: 16px; flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='8' cy='8' r='7' stroke='%23F5C542' stroke-width='1.2'/%3E%3Cpath d='M5 8l2 2 4-4' stroke='%23F5C542' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: contain;
+  margin-top: 1px;
+}
+.bundle-price-wrap {
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.bundle-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px; font-weight: 900;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.bundle-price span {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 500;
+  color: rgba(255,255,255,0.35);
+  -webkit-text-fill-color: rgba(255,255,255,0.35);
+}
+.bundle-price.free {
+  background: linear-gradient(135deg, #a8f0c6, #4ade80);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.bundle-note {
+  font-family: 'Manrope', sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  margin-top: 8px;
+  font-style: italic;
+}
+.bundle-authority-note {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  color: rgba(245,197,66,0.7);
+  margin-top: 8px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Extra bundles */
+.extra-bundles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+}
+.extra-bundle-section h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.extra-bundle-section h3::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(245,197,66,0.3), transparent);
+}
+.extra-bundle-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.mini-bundle-card {
+  padding: 22px 20px;
+}
+.mini-bundle-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.mini-bundle-desc {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.5;
+}
+
+/* ─── PACKAGES SECTION ─────────────────────────────────────────── */
+#packages {
+  padding: 120px 0;
+}
+.packages-header { margin-bottom: 60px; }
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.package-card {
+  padding: 40px 32px;
+}
+.package-category {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+.package-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+.package-price {
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px; font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.package-items {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.package-items li {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.5);
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+.package-items li::before {
+  content: '—';
+  position: absolute; left: 0;
+  color: var(--gold);
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+/* ─── CONTACT SECTION ─────────────────────────────────────────── */
+#contact {
+  padding: 120px 0;
+  background: linear-gradient(180deg, transparent, rgba(15,28,48,0.6), transparent);
+}
+.contact-header { text-align: center; margin-bottom: 72px; }
+.contact-header .section-label { justify-content: center; }
+.contact-header .section-label::before { display: none; }
+.contact-header .section-desc { margin: 0 auto; text-align: center; }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 60px;
+}
+.contact-card {
+  padding: 40px 28px;
+  text-align: center;
+}
+.contact-icon {
+  width: 60px; height: 60px;
+  margin: 0 auto 20px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(245,197,66,0.08);
+  border: 1px solid rgba(245,197,66,0.2);
+  border-radius: 16px;
+}
+.contact-icon svg {
+  width: 26px; height: 26px;
+  stroke: var(--gold); fill: none; stroke-width: 1.5;
+  filter: drop-shadow(0 0 8px rgba(245,197,66,0.5));
+  animation: iconGlow 3s ease-in-out infinite alternate;
+}
+.contact-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 8px;
+}
+.contact-value {
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px; font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.5;
+}
+.contact-value a { color: inherit; transition: color var(--transition-fast); }
+.contact-value a:hover { color: var(--gold); }
+
+.contact-cta-wrap {
+  text-align: center;
+  padding: 60px 40px;
+  border-radius: var(--radius-card);
+}
+.contact-cta-wrap h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+.contact-cta-wrap p {
+  font-family: 'Manrope', sans-serif;
+  font-size: 17px;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 36px;
+}
+
+/* ─── FOOTER ─────────────────────────────────────────────────── */
+footer {
+  background: var(--navy-deep);
+  border-top: 1px solid rgba(245,197,66,0.1);
+  padding: 72px 0 40px;
+  position: relative; z-index: 2;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+.footer-brand .nav-logo-placeholder {
+  font-size: 32px; margin-bottom: 16px; display: block;
+}
+.footer-brand p {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.7;
+  max-width: 280px;
+}
+.footer-col h4 {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  opacity: 0.8;
+}
+.footer-col ul {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.footer-col ul li a {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+  transition: color var(--transition-fast);
+}
+.footer-col ul li a:hover { color: rgba(255,255,255,0.8); }
+.footer-bottom {
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-bottom p {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: rgba(255,255,255,0.25);
+}
+.footer-gold {
+  font-family: 'Reem Kufi', sans-serif;
+  color: var(--gold);
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+/* ─── SCROLL REVEAL ─────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.12s; }
+.reveal-delay-2 { transition-delay: 0.24s; }
+.reveal-delay-3 { transition-delay: 0.36s; }
+.reveal-delay-4 { transition-delay: 0.48s; }
+
+/* ─── ANIMATIONS ─────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .bundles-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+@media (max-width: 900px) {
+  #navbar { padding: 0 28px; }
+  .section-inner { padding: 0 28px; }
+  .nav-links { display: none; }
+  .burger { display: flex; }
+  .about-grid { grid-template-columns: 1fr; gap: 52px; }
+  .process-grid { grid-template-columns: repeat(2, 1fr); }
+  .contact-grid { grid-template-columns: repeat(2, 1fr); }
+  .packages-grid { grid-template-columns: 1fr; }
+  .extra-bundles-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .bundles-grid { grid-template-columns: 1fr; }
+  .about-right { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+@media (max-width: 520px) {
+  #navbar { padding: 0 20px; }
+  .section-inner { padding: 0 20px; }
+  .hero-buttons { flex-direction: column; align-items: center; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .process-grid { grid-template-columns: 1fr; }
+  .extra-bundle-cards { grid-template-columns: 1fr; }
+  .about-right { grid-template-columns: 1fr; }
+  .mobile-menu { padding: 24px 20px; }
+  #cursor-dot, #cursor-ring { display: none; }
+  body { cursor: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- BACKGROUND ORBS -->
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+
+<!-- CANVAS (particles) -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <div class="nav-logo-img-wrap">
+      <!-- Replace src="logo.png" with your actual logo file -->
+      <img src="logo.png" alt="گرتە Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+      <span class="nav-logo-placeholder" style="display:none;">گرتە</span>
+    </div>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#bundles">Bundles</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#packages">Packages</a></li>
+    <li><a href="#contact" class="nav-cta">Contact Us</a></li>
+  </ul>
+
+  <div class="burger" id="burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#about" class="mobile-link">About</a>
+  <a href="#bundles" class="mobile-link">Bundles</a>
+  <a href="#services" class="mobile-link">Services</a>
+  <a href="#packages" class="mobile-link">Packages</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section id="hero">
+  <p class="hero-tagline">Creative Studio · Kurdistan</p>
+
+  <div class="hero-logo-mark">گرتە</div>
+
+  <h1 class="hero-headline">
+    Quality You <em>Can Feel.</em>
+  </h1>
+  <p class="hero-sub">We craft visual authority for brands that want to lead.</p>
+
+  <div class="hero-buttons">
+    <a href="#bundles" class="btn-primary">Explore Bundles</a>
+    <a href="#about" class="btn-ghost">Our Work</a>
+  </div>
+
+  <div class="hero-scroll-indicator">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll</span>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-left reveal">
+        <p class="section-label">About Us</p>
+        <h2 class="section-title">We Build <em>Visual Authority.</em></h2>
+        <p class="section-desc">گرتە is a premium creative studio born in Kurdistan, built for brands that refuse to be average. We fuse cinematic storytelling, strategic design, and deep market insight to deliver work that commands attention and builds lasting trust.</p>
+        <br>
+        <p class="section-desc">From a single reel to a full brand identity — every pixel, every frame carries intention.</p>
+        <br><br>
+        <div class="about-buttons">
+          <a href="#bundles" class="btn-primary">See Our Bundles</a>
+          <a href="#contact" class="btn-ghost">Get in Touch</a>
+        </div>
+      </div>
+      <div class="about-right">
+        <div class="glass-card stat-card reveal reveal-delay-1">
+          <span class="stat-number">120+</span>
+          <span class="stat-label">Projects Completed</span>
+        </div>
+        <div class="glass-card stat-card reveal reveal-delay-2">
+          <span class="stat-number">60+</span>
+          <span class="stat-label">Brands Worked With</span>
+        </div>
+        <div class="glass-card stat-card reveal reveal-delay-3">
+          <span class="stat-number">200+</span>
+          <span class="stat-label">Creative Campaigns</span>
+        </div>
+        <div class="glass-card stat-card reveal reveal-delay-4">
+          <span class="stat-number">98%</span>
+          <span class="stat-label">Client Satisfaction</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ PROCESS ═══════════════ -->
+<section id="process">
+  <div class="section-inner">
+    <div class="process-header reveal">
+      <p class="section-label">Our Process</p>
+      <h2 class="section-title">Four Steps to <em>Mastery</em></h2>
+      <p class="section-desc">A refined process shaped by experience — designed to deliver elite results with precision and speed.</p>
+    </div>
+    <div class="process-grid">
+      <div class="glass-card process-card reveal reveal-delay-1">
+        <div class="process-icon">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <span class="process-num">01</span>
+        <h3 class="process-title">Discovery</h3>
+        <p class="process-desc">We deep-dive into your brand, market, and audience to uncover what makes you truly unique.</p>
+      </div>
+      <div class="glass-card process-card reveal reveal-delay-2">
+        <div class="process-icon">
+          <svg viewBox="0 0 24 24"><path d="M2 20h20M6 20V10l6-6 6 6v10"/><path d="M10 20v-5h4v5"/></svg>
+        </div>
+        <span class="process-num">02</span>
+        <h3 class="process-title">Strategy</h3>
+        <p class="process-desc">Data-backed creative strategy aligned to your business goals and the pulse of your market.</p>
+      </div>
+      <div class="glass-card process-card reveal reveal-delay-3">
+        <div class="process-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <span class="process-num">03</span>
+        <h3 class="process-title">Design</h3>
+        <p class="process-desc">Cinematic visuals and content crafted with obsessive attention to quality, tone, and impact.</p>
+      </div>
+      <div class="glass-card process-card reveal reveal-delay-4">
+        <div class="process-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <span class="process-num">04</span>
+        <h3 class="process-title">Launch</h3>
+        <p class="process-desc">Precision deployment with ongoing performance analysis to ensure maximum reach and results.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ SERVICES ═══════════════ -->
+<section id="services">
+  <div class="section-inner">
+    <div class="services-header reveal">
+      <p class="section-label">What We Do</p>
+      <h2 class="section-title">Our <em>Services</em></h2>
+      <p class="section-desc">Every service is a promise — delivered with craft, care, and cinematic precision.</p>
+    </div>
+    <div class="services-list reveal">
+      <div class="service-row">
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <span class="service-name">Brand Identity</span>
+        <span class="service-tag">Strategy · Visual</span>
+        <span class="service-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h6M3 15h6"/></svg>
+        </div>
+        <span class="service-name">Content Creation</span>
+        <span class="service-tag">Graphics · Reels</span>
+        <span class="service-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        </div>
+        <span class="service-name">Videography</span>
+        <span class="service-tag">Cinematic · Commercial</span>
+        <span class="service-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <span class="service-name">Photography</span>
+        <span class="service-tag">Product · Brand · Events</span>
+        <span class="service-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M21 2H3v16h5l3 3 3-3h7V2z"/><path d="M10 8h4M8 12h8"/></svg>
+        </div>
+        <span class="service-name">Social Media Management</span>
+        <span class="service-tag">Growth · Engagement</span>
+        <span class="service-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
+        </div>
+        <span class="service-name">Advertising Campaigns</span>
+        <span class="service-tag">Paid · Organic</span>
+        <span class="service-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <span class="service-name">SWOT Analysis & Market Research</span>
+        <span class="service-tag">Insight · Intelligence</span>
+        <span class="service-arrow">→</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ BUNDLES ═══════════════ -->
+<section id="bundles">
+  <div class="section-inner">
+    <div class="bundles-header reveal">
+      <p class="section-label">Our Bundles</p>
+      <h2 class="section-title">Pick Your <em>Power Plan</em></h2>
+      <p class="section-desc">Transparent pricing, unmatched value. Choose the bundle that matches your ambition.</p>
+    </div>
+
+    <!-- Main 4 Bundles -->
+    <div class="bundles-grid">
+      <!-- Bundle 1 — Most Popular -->
+      <div class="glass-card bundle-card featured reveal reveal-delay-1">
+        <div class="bundle-badge-wrap"><span class="bundle-badge">Most Popular</span></div>
+        <p class="bundle-name">Bundle 01</p>
+        <h3 class="bundle-title">Monthly Content</h3>
+        <ul class="bundle-features">
+          <li class="bundle-feature">2 Platforms covered</li>
+          <li class="bundle-feature">SWOT Analysis (first month)</li>
+          <li class="bundle-feature">5 Reel videos</li>
+          <li class="bundle-feature">12 Graphic posts</li>
+          <li class="bundle-feature">1 Commercial video <em style="color:var(--gold);font-size:11px;">(new client offer)</em></li>
+          <li class="bundle-feature">Captions included</li>
+          <li class="bundle-feature">1 Monthly report</li>
+          <li class="bundle-feature">Customer feedback analysis</li>
+        </ul>
+        <div class="bundle-price-wrap">
+          <div class="bundle-price">$400 <span>/ month</span></div>
+        </div>
+      </div>
+
+      <!-- Bundle 2 — 3 Month -->
+      <div class="glass-card bundle-card reveal reveal-delay-2">
+        <p class="bundle-name">Bundle 02</p>
+        <h3 class="bundle-title">3 Month Content</h3>
+        <ul class="bundle-features">
+          <li class="bundle-feature">2 Platforms covered</li>
+          <li class="bundle-feature">SWOT Analysis (first month)</li>
+          <li class="bundle-feature">15 Reel videos</li>
+          <li class="bundle-feature">36 Graphic posts</li>
+          <li class="bundle-feature">1 Commercial video</li>
+          <li class="bundle-feature">Captions included</li>
+          <li class="bundle-feature">3 Monthly reports</li>
+          <li class="bundle-feature">Customer feedback analysis</li>
+        </ul>
+        <div class="bundle-price-wrap">
+          <div class="bundle-price">$600 <span>/ 3 months</span></div>
+        </div>
+      </div>
+
+      <!-- Bundle 3 — Free Trust -->
+      <div class="glass-card bundle-card reveal reveal-delay-3">
+        <p class="bundle-name">Bundle 03</p>
+        <h3 class="bundle-title">Customer's Trust</h3>
+        <ul class="bundle-features">
+          <li class="bundle-feature">SWOT Analysis</li>
+          <li class="bundle-feature">Market feedback analysis</li>
+          <li class="bundle-feature">2 Graphic posts</li>
+          <li class="bundle-feature">1 Reel video</li>
+        </ul>
+        <div class="bundle-price-wrap">
+          <div class="bundle-price free">FREE</div>
+          <p class="bundle-note">One-time offer to build trust with new clients.</p>
+        </div>
+      </div>
+
+      <!-- Bundle 4 — Authority / Best Value -->
+      <div class="glass-card bundle-card best-value reveal reveal-delay-4">
+        <div class="bundle-badge-wrap"><span class="bundle-badge">Best Value</span></div>
+        <p class="bundle-name">Bundle 04</p>
+        <h3 class="bundle-title">Authority</h3>
+        <ul class="bundle-features">
+          <li class="bundle-feature">Double Engagement</li>
+          <li class="bundle-feature">Double Reach</li>
+          <li class="bundle-feature">Double Targeted Audience</li>
+          <li class="bundle-feature">Full premium content suite</li>
+          <li class="bundle-feature">Priority support</li>
+          <li class="bundle-feature">Deep analytics & reports</li>
+        </ul>
+        <div class="bundle-price-wrap">
+          <div class="bundle-price">$1000 <span>/ month</span></div>
+          <p class="bundle-authority-note">⚡ Client grants full creative authority to گرتە — zero intervention required for maximum impact.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Extra Bundles -->
+    <div class="extra-bundles-grid">
+      <!-- Videography -->
+      <div class="extra-bundle-section reveal">
+        <h3>Videography</h3>
+        <div class="extra-bundle-cards">
+          <div class="glass-card mini-bundle-card">
+            <div class="mini-bundle-name">Event Coverage</div>
+            <div class="mini-bundle-desc">Full cinematic documentation of your event.</div>
+          </div>
+          <div class="glass-card mini-bundle-card">
+            <div class="mini-bundle-name">Commercial Videos</div>
+            <div class="mini-bundle-desc">High-production ads that convert and inspire.</div>
+          </div>
+          <div class="glass-card mini-bundle-card">
+            <div class="mini-bundle-name">Product Videography</div>
+            <div class="mini-bundle-desc">Showcase your product in its best light.</div>
+          </div>
+          <div class="glass-card mini-bundle-card">
+            <div class="mini-bundle-name">Reels Production</div>
+            <div class="mini-bundle-desc">Fast, engaging short-form video content.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photography -->
+      <div class="extra-bundle-section reveal reveal-delay-2">
+        <h3>Photography</h3>
+        <div class="extra-bundle-cards">
+          <div class="glass-card mini-bundle-card">
+            <div class="mini-bundle-name">Product Photography</div>
+            <div class="mini-bundle-desc">Studio-quality product shoots that sell.</div>
+          </div>
+          <div class="glass-card mini-bundle-card">
+            <div class="mini-bundle-name">Brand Photography</div>
+            <div class="mini-bundle-desc">Visual storytelling for your brand identity.</div>
+          </div>
+          <div class="glass-card mini-bundle-card">
+            <div class="mini-bundle-name">Event Photography</div>
+            <div class="mini-bundle-desc">Capture every important moment in full detail.</div>
+          </div>
+          <div class="glass-card mini-bundle-card">
+            <div class="mini-bundle-name">Social Media Photo</div>
+            <div class="mini-bundle-desc">Platform-optimized imagery for maximum reach.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ PACKAGES ═══════════════ -->
+<section id="packages">
+  <div class="section-inner">
+    <div class="packages-header reveal">
+      <p class="section-label">Service Packages</p>
+      <h2 class="section-title">Tailored <em>Packages</em></h2>
+      <p class="section-desc">Flexible pricing built for the Kurdistan market — delivering elite-level results at accessible investment points.</p>
+    </div>
+    <div class="packages-grid">
+      <div class="glass-card package-card reveal reveal-delay-1">
+        <p class="package-category">Content &amp; Social</p>
+        <h3 class="package-title">Starter Growth</h3>
+        <p class="package-price">$120 – $250 / month</p>
+        <ul class="package-items">
+          <li>1 Platform managed</li>
+          <li>8 Graphic posts</li>
+          <li>2 Reel videos</li>
+          <li>Captions &amp; scheduling</li>
+          <li>Basic monthly report</li>
+        </ul>
+      </div>
+      <div class="glass-card package-card reveal reveal-delay-2">
+        <p class="package-category">Videography</p>
+        <h3 class="package-title">Cinematic Essentials</h3>
+        <p class="package-price">$200 – $500 / project</p>
+        <ul class="package-items">
+          <li>Up to 2 hours on-site</li>
+          <li>1–3 edited final videos</li>
+          <li>Color grading included</li>
+          <li>Music licensed</li>
+          <li>Delivery in 5–7 days</li>
+        </ul>
+      </div>
+      <div class="glass-card package-card reveal reveal-delay-3">
+        <p class="package-category">Photography</p>
+        <h3 class="package-title">Visual Identity Shoot</h3>
+        <p class="package-price">$150 – $400 / session</p>
+        <ul class="package-items">
+          <li>Up to 3 hours on-site</li>
+          <li>50+ edited images</li>
+          <li>Full resolution delivery</li>
+          <li>Web-optimized files</li>
+          <li>Delivery in 3–5 days</li>
+        </ul>
+      </div>
+      <div class="glass-card package-card reveal reveal-delay-1">
+        <p class="package-category">Brand Identity</p>
+        <h3 class="package-title">Brand Foundation</h3>
+        <p class="package-price">$300 – $800 / project</p>
+        <ul class="package-items">
+          <li>Logo design (3 concepts)</li>
+          <li>Color &amp; typography system</li>
+          <li>Brand guidelines PDF</li>
+          <li>Social media templates</li>
+          <li>2 rounds of revision</li>
+        </ul>
+      </div>
+      <div class="glass-card package-card reveal reveal-delay-2">
+        <p class="package-category">Advertising</p>
+        <h3 class="package-title">Campaign Launch</h3>
+        <p class="package-price">$250 – $600 / campaign</p>
+        <ul class="package-items">
+          <li>Ad copywriting</li>
+          <li>3–5 creative ad sets</li>
+          <li>Audience targeting strategy</li>
+          <li>Platform setup &amp; launch</li>
+          <li>Performance report</li>
+        </ul>
+      </div>
+      <div class="glass-card package-card reveal reveal-delay-3">
+        <p class="package-category">Full Service</p>
+        <h3 class="package-title">Complete Authority</h3>
+        <p class="package-price">Custom — from $800 / month</p>
+        <ul class="package-items">
+          <li>Everything in Authority bundle</li>
+          <li>Dedicated account manager</li>
+          <li>Monthly strategy call</li>
+          <li>Priority delivery queue</li>
+          <li>Full creative ownership</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-header reveal">
+      <p class="section-label">Get In Touch</p>
+      <h2 class="section-title">Let's <em>Create Together</em></h2>
+      <p class="section-desc">Ready to elevate your brand? We're always working — reach out and let's start building something exceptional.</p>
+    </div>
+
+    <div class="contact-grid">
+      <div class="glass-card contact-card reveal reveal-delay-1">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.28h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.13 6.13l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <p class="contact-label">Phone</p>
+        <p class="contact-value"><a href="tel:+9647700269308">0770 026 9308</a></p>
+      </div>
+      <div class="glass-card contact-card reveal reveal-delay-2">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <p class="contact-label">Email</p>
+        <p class="contact-value"><a href="mailto:rekar.chwarbax@gmail.com">rekar.chwarbax@gmail.com</a></p>
+      </div>
+      <div class="glass-card contact-card reveal reveal-delay-3">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <p class="contact-label">Location</p>
+        <p class="contact-value">Kurdistan, Iraq</p>
+      </div>
+      <div class="glass-card contact-card reveal reveal-delay-4">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <p class="contact-label">Working Hours</p>
+        <p class="contact-value">Always Available<br><span style="font-size:12px;color:rgba(255,255,255,0.35);">Except Friday</span></p>
+      </div>
+    </div>
+
+    <!-- Big CTA -->
+    <div class="glass-card contact-cta-wrap reveal">
+      <h3>Start Your Project <em style="color:var(--gold);font-style:italic;">Today</em></h3>
+      <p>Drop us a message and we'll respond within hours, not days.</p>
+      <a href="mailto:rekar.chwarbax@gmail.com" class="btn-primary">Send Us an Email</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="section-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="nav-logo-placeholder">گرتە</span>
+        <p>A premium creative studio crafting visual authority for brands that want to lead. Based in Kurdistan. Working with the world.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#process">Process</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#bundles">Bundles</a></li>
+          <li><a href="#packages">Packages</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Brand Identity</a></li>
+          <li><a href="#services">Content Creation</a></li>
+          <li><a href="#services">Videography</a></li>
+          <li><a href="#services">Photography</a></li>
+          <li><a href="#services">Advertising</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:rekar.chwarbax@gmail.com">Email Us</a></li>
+          <li><a href="#contact">Find Us</a></li>
+          <li><a href="#bundles">View Pricing</a></li>
+          <li><a href="#contact">Get a Quote</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 <span class="footer-gold">گرتە</span> Creative Studio. All rights reserved.</p>
+      <p style="color:rgba(255,255,255,0.18);">Real Quality. Real Impact.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── JAVASCRIPT ─────────────────────────────────────────── -->
+<script>
+/* ── CUSTOM CURSOR ── */
+const dot  = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mouseX = 0, mouseY = 0;
+let ringX  = 0, ringY  = 0;
+let dotX   = 0, dotY   = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+(function cursorLoop() {
+  // Dot — very tight follow
+  dotX  += (mouseX - dotX)  * 0.55;
+  dotY  += (mouseY - dotY)  * 0.55;
+  dot.style.left = dotX + 'px';
+  dot.style.top  = dotY + 'px';
+
+  // Ring — smooth eased follow
+  ringX += (mouseX - ringX) * 0.085;
+  ringY += (mouseY - ringY) * 0.085;
+  ring.style.left = ringX + 'px';
+  ring.style.top  = ringY + 'px';
+
+  requestAnimationFrame(cursorLoop);
+})();
+
+/* ── NAVBAR SCROLL ── */
+const navbar = document.getElementById('navbar');
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+      ticking = false;
+    });
+    ticking = true;
+  }
+}, { passive: true });
+
+/* ── BURGER MENU ── */
+const burger     = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobile-menu');
+burger.addEventListener('click', () => {
+  burger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+document.querySelectorAll('.mobile-link').forEach(link => {
+  link.addEventListener('click', () => {
+    burger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+/* ── SCROLL REVEAL ── */
+const revealEls = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObs.unobserve(entry.target); // fire once only
+    }
+  });
+}, {
+  threshold:   0.08,
+  rootMargin: '0px 0px -60px 0px'
+});
+revealEls.forEach(el => revealObs.observe(el));
+
+/* ── CANVAS PARTICLES ── */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); }, { passive: true });
+
+  function Particle() {
+    this.reset(true);
+  }
+  Particle.prototype.reset = function(randomY) {
+    this.x     = Math.random() * W;
+    this.y     = randomY ? Math.random() * H : H + 10;
+    this.size  = Math.random() * 1.6 + 0.4;
+    this.speed = Math.random() * 0.18 + 0.06;
+    this.vx    = (Math.random() - 0.5) * 0.22;
+    this.vy    = -(Math.random() * 0.25 + 0.08);
+    this.alpha = 0;
+    this.targetAlpha = Math.random() * 0.35 + 0.06;
+    this.life  = 0;
+    this.maxLife = Math.random() * 400 + 250;
+    this.gold  = Math.random() > 0.55;
+    // sinusoidal drift
+    this.sinOffset = Math.random() * Math.PI * 2;
+    this.sinFreq   = Math.random() * 0.008 + 0.003;
+    this.sinAmp    = Math.random() * 0.6 + 0.2;
+  };
+  Particle.prototype.update = function() {
+    this.life++;
+    const progress = this.life / this.maxLife;
+    // Fade in first 15%, hold, fade out last 20%
+    if (progress < 0.15) {
+      this.alpha = (progress / 0.15) * this.targetAlpha;
+    } else if (progress > 0.80) {
+      this.alpha = ((1 - progress) / 0.20) * this.targetAlpha;
+    } else {
+      this.alpha = this.targetAlpha;
+    }
+    this.x += this.vx + Math.sin(this.life * this.sinFreq + this.sinOffset) * this.sinAmp * 0.04;
+    this.y += this.vy;
+    if (this.life >= this.maxLife) this.reset(false);
+    // wrap horizontally
+    if (this.x < 0) this.x = W;
+    if (this.x > W) this.x = 0;
+  };
+  Particle.prototype.draw = function() {
+    if (this.alpha <= 0) return;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.gold
+      ? `rgba(245,197,66,${this.alpha})`
+      : `rgba(200,220,255,${this.alpha * 0.55})`;
+    ctx.fill();
+  };
+
+  const COUNT = 90;
+  for (let i = 0; i < COUNT; i++) {
+    const p = new Particle();
+    p.life = Math.floor(Math.random() * p.maxLife); // stagger starts
+    particles.push(p);
+  }
+
+  let lastTime = 0;
+  function loop(ts) {
+    const dt = ts - lastTime;
+    lastTime = ts;
+    // Only clear & redraw if enough time has passed (throttle to ~60fps)
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+
+/* ── ACTIVE NAV HIGHLIGHT ── */
+const sections   = document.querySelectorAll('section[id]');
+const navAnchors = document.querySelectorAll('.nav-links a[href^="#"]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 130) current = s.id;
+  });
+  navAnchors.forEach(a => {
+    a.classList.toggle('active-nav', a.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+</script>
+</body>
+</html>
